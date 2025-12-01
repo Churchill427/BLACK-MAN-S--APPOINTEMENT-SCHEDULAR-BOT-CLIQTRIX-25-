@@ -1,0 +1,41 @@
+/**
+ * BLACK MAN'S Consulting Services Bot
+ * Trigger Handler – FIXED (Does NOT repeat continuously)
+ */
+// Create response map
+response = Map();
+repliesList = list();
+// Check if visitor already entered chat once
+hasStarted = false;
+if(visitor != null)
+{
+	if(visitor.get("has_started") == null)
+	{
+		visitor.put("has_started",true);
+		hasStarted = false;
+		// First time entering chat
+	}
+	else
+	{
+		hasStarted = true;
+		// Already inside session
+	}
+}
+// Only show welcome ONCE
+if(hasStarted == false)
+{
+	welcomeText = "👋 Welcome to BLACK MAN'S Consulting Services!\n\n";
+	welcomeText = welcomeText + "I'm your virtual assistant. I can help you:\n\n";
+	welcomeText = welcomeText + "✅ Book appointments\n";
+	welcomeText = welcomeText + "✅ Reschedule appointments\n";
+	welcomeText = welcomeText + "✅ Cancel appointments\n";
+	welcomeText = welcomeText + "✅ View our services\n\n";
+	welcomeText = welcomeText + "Type 'menu' to get started!";
+	repliesList.add(welcomeText);
+	response.put("action","reply");
+	response.put("replies",repliesList);
+	return response;
+}
+// If visitor already started, DO NOTHING
+response.put("action","none");
+return response;

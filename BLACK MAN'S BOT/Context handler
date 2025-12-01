@@ -1,0 +1,10 @@
+/**
+ * BLACK MAN'S Consulting Services Bot
+ * Context Handler - Backend API Integration
+ */
+scriptUrl = "https://script.google.com/macros/s/AKfycbwUshFzvkmg_-oA1Fx1fJEdttMd1G5Jm1ZIRUzNKNGYqeydo7d5kd0b2FPWmZ4L56ckdQ/exec";
+response = Map();
+response.put("status","ready");
+response.put("message","Context handler loaded");
+response.put("script_url",scriptUrl);
+return response;

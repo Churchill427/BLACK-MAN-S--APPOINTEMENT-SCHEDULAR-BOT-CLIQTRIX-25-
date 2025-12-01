@@ -1,0 +1,20 @@
+/**
+ * BLACK MAN'S Consulting Services Bot
+ * FAILURE HANDLER
+ * Handles backend/API errors safely
+ */
+response = Map();
+replies = list();
+// Default fallback message
+fallback = "⚠️ Oops! Something went wrong while processing your request.\n";
+fallback = fallback + "This might happen due to:\n";
+fallback = fallback + "• Server delay\n";
+fallback = fallback + "• Network issue\n";
+fallback = fallback + "• Invalid input\n\n";
+fallback = fallback + "👉 Please type *menu* to start again.";
+// Add fallback reply
+replies.add(fallback);
+// Put into response object (MANDATORY format)
+response.put("action","reply");
+response.put("replies",replies);
+return response;

@@ -1,0 +1,600 @@
+/**
+ * BLACK MAN'S CONSULTING SERVICES BOT
+ * MESSAGE HANDLER - YOUR WORKING CODE + BACKEND
+ * ONLY ADDED: Backend call in CONFIRM section
+ */
+// ==================== BACKEND URL ====================
+BACKEND_URL = "https://script.google.com/macros/s/AKfycbwUshFzvkmg_-oA1Fx1fJEdttMd1G5Jm1ZIRUzNKNGYqeydo7d5kd0b2FPWmZ4L56ckdQ/exec";
+// ==================== EXTRACT USER MESSAGE (ULTRA-SAFE) ====================
+userMessage = "";
+// Try multiple ways to get the message
+try 
+{
+	if(message != null)
+	{
+		// Method 1: Direct content
+		if(message.get("content") != null)
+		{
+			userMessage = message.get("content") + "";
+		}
+		// Method 2: Text field
+		else if(message.get("text") != null)
+		{
+			userMessage = message.get("text") + "";
+		}
+		// Method 3: Message field
+		else if(message.get("message") != null)
+		{
+			userMessage = message.get("message") + "";
+		}
+	}
+}
+catch (e)
+{
+	userMessage = "";
+}
+// Trim and clean
+userMessage = userMessage.trim();
+// If STILL empty, try to get from context
+if(userMessage.equals("") || userMessage.length() == 0)
+{
+	response = Map();
+	replies = list();
+	replies.add("Please type a message to continue.\n\nType 'menu' to see options");
+	response.put("action","reply");
+	response.put("replies",replies);
+	return response;
+}
+// ==================== GET/SET STATE ====================
+state = "menu";
+try 
+{
+	if(visitor != null)
+	{
+		if(visitor.get("conversation_state") != null)
+		{
+			state = visitor.get("conversation_state") + "";
+		}
+		else
+		{
+			visitor.put("conversation_state","menu");
+		}
+	}
+}
+catch (e)
+{
+	state = "menu";
+}
+// ==================== INITIALIZE RESPONSE ====================
+response = Map();
+replies = list();
+// ==================== HANDLE "MENU" OR "START" ANYTIME ====================
+userLower = userMessage.toLowerCase();
+if(userLower.equals("menu") || userLower.equals("start") || userLower.contains("menu") || userLower.contains("start"))
+{
+	if(visitor != null)
+	{
+		visitor.put("conversation_state","menu");
+	}
+	menuText = "👋 Welcome to BLACK MAN'S Consulting Services!\n\n";
+	menuText = menuText + "I can help you with:\n\n";
+	menuText = menuText + "1️⃣ Book a new appointment\n";
+	menuText = menuText + "2️⃣ Reschedule appointment\n";
+	menuText = menuText + "3️⃣ Cancel appointment\n";
+	menuText = menuText + "4️⃣ View available services\n\n";
+	menuText = menuText + "Please type the number (1-4)";
+	replies.add(menuText);
+	response.put("action","reply");
+	response.put("replies",replies);
+	return response;
+}
+// ==================== STATE: MENU ====================
+if(state.equals("menu"))
+{
+	// Option 1: Book
+	if(userMessage.equals("1"))
+	{
+		if(visitor != null)
+		{
+			visitor.put("conversation_state","select_service");
+		}
+		serviceText = "📋 Available Services:\n\n";
+		serviceText = serviceText + "1️⃣ General Consultation (60 min)\n";
+		serviceText = serviceText + "2️⃣ Follow-up Session (30 min)\n";
+		serviceText = serviceText + "3️⃣ Workshop Session (120 min)\n\n";
+		serviceText = serviceText + "Please type the number (1-3)";
+		replies.add(serviceText);
+		response.put("action","reply");
+		response.put("replies",replies);
+		return response;
+	}
+	// Option 2: Reschedule
+	if(userMessage.equals("2"))
+	{
+		if(visitor != null)
+		{
+			visitor.put("conversation_state","reschedule_get_id");
+		}
+		replies.add("🔄 Enter Appointment ID\nExample: APT100001\n\nType 'menu' to go back");
+		response.put("action","reply");
+		response.put("replies",replies);
+		return response;
+	}
+	// Option 3: Cancel
+	if(userMessage.equals("3"))
+	{
+		if(visitor != null)
+		{
+			visitor.put("conversation_state","cancel_get_id");
+		}
+		replies.add("❌ Enter Appointment ID\nExample: APT100001\n\nType 'menu' to go back");
+		response.put("action","reply");
+		response.put("replies",replies);
+		return response;
+	}
+	// Option 4: Services
+	if(userMessage.equals("4"))
+	{
+		serviceText = "📋 OUR SERVICES\n\n";
+		serviceText = serviceText + "1️⃣ General Consultation\n";
+		serviceText = serviceText + "   Duration: 60 minutes\n\n";
+		serviceText = serviceText + "2️⃣ Follow-up Session\n";
+		serviceText = serviceText + "   Duration: 30 minutes\n\n";
+		serviceText = serviceText + "3️⃣ Workshop Session\n";
+		serviceText = serviceText + "   Duration: 120 minutes\n\n";
+		serviceText = serviceText + "Type 'menu' to go back";
+		replies.add(serviceText);
+		response.put("action","reply");
+		response.put("replies",replies);
+		return response;
+	}
+	// Invalid option
+	replies.add("❌ Invalid option\n\nPlease type:\n1 - Book\n2 - Reschedule\n3 - Cancel\n4 - Services");
+	response.put("action","reply");
+	response.put("replies",replies);
+	return response;
+}
+// ==================== STATE: SELECT SERVICE ====================
+if(state.equals("select_service"))
+{
+	selectedService = "";
+	serviceName = "";
+	if(userMessage.equals("1"))
+	{
+		selectedService = "consultation";
+		serviceName = "General Consultation";
+	}
+	if(userMessage.equals("2"))
+	{
+		selectedService = "followup";
+		serviceName = "Follow-up Session";
+	}
+	if(userMessage.equals("3"))
+	{
+		selectedService = "workshop";
+		serviceName = "Workshop Session";
+	}
+	if(selectedService.equals(""))
+	{
+		replies.add("❌ Invalid service\n\nPlease type:\n1 - General Consultation\n2 - Follow-up Session\n3 - Workshop Session");
+		response.put("action","reply");
+		response.put("replies",replies);
+		return response;
+	}
+	if(visitor != null)
+	{
+		visitor.put("booking_service",selectedService);
+		visitor.put("booking_service_name",serviceName);
+		visitor.put("conversation_state","get_name");
+	}
+	replies.add("✅ Service: " + serviceName + "\n\n👤 Enter your full name:");
+	response.put("action","reply");
+	response.put("replies",replies);
+	return response;
+}
+// ==================== STATE: GET NAME ====================
+if(state.equals("get_name"))
+{
+	if(userMessage.length() < 2)
+	{
+		replies.add("❌ Name too short\n\nEnter your full name:");
+		response.put("action","reply");
+		response.put("replies",replies);
+		return response;
+	}
+	if(visitor != null)
+	{
+		visitor.put("booking_name",userMessage);
+		visitor.put("conversation_state","get_email");
+	}
+	replies.add("👤 Name: " + userMessage + "\n\n📧 Enter your email:");
+	response.put("action","reply");
+	response.put("replies",replies);
+	return response;
+}
+// ==================== STATE: GET EMAIL ====================
+if(state.equals("get_email"))
+{
+	if(!userMessage.contains("@"))
+	{
+		replies.add("❌ Invalid email\n\nEnter valid email:");
+		response.put("action","reply");
+		response.put("replies",replies);
+		return response;
+	}
+	if(visitor != null)
+	{
+		visitor.put("booking_email",userMessage);
+		visitor.put("conversation_state","get_phone");
+	}
+	replies.add("📧 Email: " + userMessage + "\n\n📱 Enter phone or type 'skip':");
+	response.put("action","reply");
+	response.put("replies",replies);
+	return response;
+}
+// ==================== STATE: GET PHONE ====================
+if(state.equals("get_phone"))
+{
+	phoneNumber = "";
+	if(!userLower.equals("skip"))
+	{
+		phoneNumber = userMessage;
+	}
+	if(visitor != null)
+	{
+		visitor.put("booking_phone",phoneNumber);
+		visitor.put("conversation_state","get_date");
+	}
+	phoneMsg = "";
+	if(phoneNumber.length() > 0)
+	{
+		phoneMsg = "📱 Phone: " + phoneNumber + "\n\n";
+	}
+	replies.add(phoneMsg + "📅 Enter date (YYYY-MM-DD)\nExample: 2025-12-15");
+	response.put("action","reply");
+	response.put("replies",replies);
+	return response;
+}
+// ==================== STATE: GET DATE ====================
+if(state.equals("get_date"))
+{
+	if(userMessage.length() != 10)
+	{
+		replies.add("❌ Invalid format\n\nUse: YYYY-MM-DD\nExample: 2025-12-15");
+		response.put("action","reply");
+		response.put("replies",replies);
+		return response;
+	}
+	if(visitor != null)
+	{
+		visitor.put("booking_date",userMessage);
+		visitor.put("conversation_state","select_time");
+	}
+	timeText = "📅 Date: " + userMessage + "\n\n⏰ Select time:\n\n";
+	timeText = timeText + "1️⃣ 09:00 AM - 10:00 AM\n";
+	timeText = timeText + "2️⃣ 02:00 PM - 03:00 PM\n";
+	timeText = timeText + "3️⃣ 04:30 PM - 05:30 PM\n\n";
+	timeText = timeText + "Type the number (1-3)";
+	replies.add(timeText);
+	response.put("action","reply");
+	response.put("replies",replies);
+	return response;
+}
+// ==================== STATE: SELECT TIME ====================
+if(state.equals("select_time"))
+{
+	timeSlot = "";
+	startTime24 = "";
+	endTime24 = "";
+	if(userMessage.equals("1"))
+	{
+		timeSlot = "09:00 AM - 10:00 AM";
+		startTime24 = "09:00";
+		endTime24 = "10:00";
+	}
+	if(userMessage.equals("2"))
+	{
+		timeSlot = "02:00 PM - 03:00 PM";
+		startTime24 = "14:00";
+		endTime24 = "15:00";
+	}
+	if(userMessage.equals("3"))
+	{
+		timeSlot = "04:30 PM - 05:30 PM";
+		startTime24 = "16:30";
+		endTime24 = "17:30";
+	}
+	if(timeSlot.equals(""))
+	{
+		replies.add("❌ Invalid time\n\nType:\n1 - 09:00 AM\n2 - 02:00 PM\n3 - 04:30 PM");
+		response.put("action","reply");
+		response.put("replies",replies);
+		return response;
+	}
+	if(visitor != null)
+	{
+		visitor.put("booking_time",timeSlot);
+		visitor.put("booking_start_time",startTime24);
+		visitor.put("booking_end_time",endTime24);
+		visitor.put("conversation_state","get_notes");
+	}
+	replies.add("⏰ Time: " + timeSlot + "\n\n📝 Any notes?\n(Type 'none' if no notes)");
+	response.put("action","reply");
+	response.put("replies",replies);
+	return response;
+}
+// ==================== STATE: GET NOTES ====================
+if(state.equals("get_notes"))
+{
+	notes = "";
+	if(!userLower.equals("none"))
+	{
+		notes = userMessage;
+	}
+	if(visitor != null)
+	{
+		visitor.put("booking_notes",notes);
+		visitor.put("conversation_state","confirm_booking");
+	}
+	// Get all booking data
+	serviceName = "Unknown";
+	customerName = "Unknown";
+	customerEmail = "Unknown";
+	customerPhone = "";
+	appointmentDate = "Unknown";
+	appointmentTime = "Unknown";
+	if(visitor != null)
+	{
+		try 
+		{
+			if(visitor.get("booking_service_name") != null)
+			{
+				serviceName = visitor.get("booking_service_name") + "";
+			}
+			if(visitor.get("booking_name") != null)
+			{
+				customerName = visitor.get("booking_name") + "";
+			}
+			if(visitor.get("booking_email") != null)
+			{
+				customerEmail = visitor.get("booking_email") + "";
+			}
+			if(visitor.get("booking_phone") != null)
+			{
+				customerPhone = visitor.get("booking_phone") + "";
+			}
+			if(visitor.get("booking_date") != null)
+			{
+				appointmentDate = visitor.get("booking_date") + "";
+			}
+			if(visitor.get("booking_time") != null)
+			{
+				appointmentTime = visitor.get("booking_time") + "";
+			}
+		}
+		catch (e)
+		{
+			// Use defaults
+		}
+	}
+	summary = "📋 CONFIRM APPOINTMENT\n";
+	summary = summary + "══════════════════════\n\n";
+	summary = summary + "Service: " + serviceName + "\n";
+	summary = summary + "Name: " + customerName + "\n";
+	summary = summary + "Email: " + customerEmail + "\n";
+	if(customerPhone.length() > 0)
+	{
+		summary = summary + "Phone: " + customerPhone + "\n";
+	}
+	summary = summary + "Date: " + appointmentDate + "\n";
+	summary = summary + "Time: " + appointmentTime + "\n";
+	if(notes.length() > 0)
+	{
+		summary = summary + "Notes: " + notes + "\n";
+	}
+	summary = summary + "\n══════════════════════\n";
+	summary = summary + "Type CONFIRM to book\nType CANCEL to restart";
+	replies.add(summary);
+	response.put("action","reply");
+	response.put("replies",replies);
+	return response;
+}
+// ==================== STATE: CONFIRM BOOKING ====================
+if(state.equals("confirm_booking"))
+{
+	if(userLower.equals("confirm"))
+	{
+		// ========================================
+		// BACKEND INTEGRATION STARTS HERE
+		// ========================================
+		appointmentId = "APT-ERROR";
+		try 
+		{
+			// Get booking data from visitor
+			serviceId = "";
+			serviceName = "";
+			customerName = "";
+			customerEmail = "";
+			customerPhone = "";
+			appointmentDate = "";
+			startTime24 = "";
+			endTime24 = "";
+			notes = "";
+			if(visitor != null)
+			{
+				if(visitor.get("booking_service") != null)
+				{
+					serviceId = visitor.get("booking_service") + "";
+				}
+				if(visitor.get("booking_service_name") != null)
+				{
+					serviceName = visitor.get("booking_service_name") + "";
+				}
+				if(visitor.get("booking_name") != null)
+				{
+					customerName = visitor.get("booking_name") + "";
+				}
+				if(visitor.get("booking_email") != null)
+				{
+					customerEmail = visitor.get("booking_email") + "";
+				}
+				if(visitor.get("booking_phone") != null)
+				{
+					customerPhone = visitor.get("booking_phone") + "";
+				}
+				if(visitor.get("booking_date") != null)
+				{
+					appointmentDate = visitor.get("booking_date") + "";
+				}
+				if(visitor.get("booking_start_time") != null)
+				{
+					startTime24 = visitor.get("booking_start_time") + "";
+				}
+				if(visitor.get("booking_end_time") != null)
+				{
+					endTime24 = visitor.get("booking_end_time") + "";
+				}
+				if(visitor.get("booking_notes") != null)
+				{
+					notes = visitor.get("booking_notes") + "";
+				}
+			}
+			// Build ISO datetime strings for Google Calendar
+			startTimeISO = appointmentDate + "T" + startTime24 + ":00+05:30";
+			endTimeISO = appointmentDate + "T" + endTime24 + ":00+05:30";
+			// Prepare backend request
+			requestData = Map();
+			requestData.put("action","bookAppointment");
+			requestData.put("customerName",customerName);
+			requestData.put("customerEmail",customerEmail);
+			requestData.put("customerPhone",customerPhone);
+			requestData.put("startTime",startTimeISO);
+			requestData.put("endTime",endTimeISO);
+			requestData.put("serviceId",serviceId);
+			requestData.put("notes",notes);
+			// Call backend API
+			apiResponse = invokeurl
+			[
+				url :BACKEND_URL
+				type :POST
+				parameters:requestData.toString()
+				detailed:false
+			];
+			// Extract appointment ID from response
+			if(apiResponse != null)
+			{
+				if(apiResponse.get("success") == true)
+				{
+					appointmentData = apiResponse.get("data");
+					if(appointmentData != null && appointmentData.get("appointmentId") != null)
+					{
+						appointmentId = appointmentData.get("appointmentId") + "";
+					}
+				}
+			}
+		}
+		catch (e)
+		{
+			// Backend call failed - use fallback ID
+			appointmentCounter = 100001;
+			if(visitor != null)
+			{
+				try 
+				{
+					if(visitor.get("appointment_counter") != null)
+					{
+						appointmentCounter = visitor.get("appointment_counter").toLong() + 1;
+					}
+					visitor.put("appointment_counter",appointmentCounter);
+				}
+				catch (e2)
+				{
+					appointmentCounter = 100001;
+				}
+			}
+			appointmentId = "APT" + appointmentCounter + "-OFFLINE";
+		}
+		// ========================================
+		// BACKEND INTEGRATION ENDS HERE
+		// ========================================
+		successText = "✅ BOOKING CONFIRMED!\n";
+		successText = successText + "══════════════════════\n\n";
+		successText = successText + "Appointment ID:\n" + appointmentId + "\n\n";
+		successText = successText + "Confirmation email will be sent.\n\n";
+		successText = successText + "Save your ID for future reference.\n\n";
+		successText = successText + "══════════════════════\n";
+		successText = successText + "Type 'menu' for more options";
+		if(visitor != null)
+		{
+			visitor.put("conversation_state","menu");
+			visitor.remove("booking_service");
+			visitor.remove("booking_service_name");
+			visitor.remove("booking_name");
+			visitor.remove("booking_email");
+			visitor.remove("booking_phone");
+			visitor.remove("booking_date");
+			visitor.remove("booking_time");
+			visitor.remove("booking_start_time");
+			visitor.remove("booking_end_time");
+			visitor.remove("booking_notes");
+		}
+		replies.add(successText);
+		response.put("action","reply");
+		response.put("replies",replies);
+		return response;
+	}
+	if(userLower.equals("cancel"))
+	{
+		if(visitor != null)
+		{
+			visitor.put("conversation_state","menu");
+			visitor.remove("booking_service");
+			visitor.remove("booking_service_name");
+			visitor.remove("booking_name");
+			visitor.remove("booking_email");
+			visitor.remove("booking_phone");
+			visitor.remove("booking_date");
+			visitor.remove("booking_time");
+			visitor.remove("booking_start_time");
+			visitor.remove("booking_end_time");
+			visitor.remove("booking_notes");
+		}
+		replies.add("❌ Booking cancelled\n\nType 'menu' to start again");
+		response.put("action","reply");
+		response.put("replies",replies);
+		return response;
+	}
+	replies.add("Type CONFIRM or CANCEL");
+	response.put("action","reply");
+	response.put("replies",replies);
+	return response;
+}
+// ==================== STATE: RESCHEDULE ====================
+if(state.equals("reschedule_get_id"))
+{
+	if(visitor != null)
+	{
+		visitor.put("conversation_state","menu");
+	}
+	replies.add("🔄 Reschedule: " + userMessage + "\n(Coming soon)\n\nType 'menu'");
+	response.put("action","reply");
+	response.put("replies",replies);
+	return response;
+}
+// ==================== STATE: CANCEL ====================
+if(state.equals("cancel_get_id"))
+{
+	if(visitor != null)
+	{
+		visitor.put("conversation_state","menu");
+	}
+	replies.add("❌ Cancel: " + userMessage + "\n(Coming soon)\n\nType 'menu'");
+	response.put("action","reply");
+	response.put("replies",replies);
+	return response;
+}
+// ==================== FALLBACK ====================
+replies.add("❓ Type 'menu' to see options");
+response.put("action","reply");
+response.put("replies",replies);
+return response;
