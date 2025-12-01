@@ -40,3 +40,188 @@ Integrated with **Google Calendar** through **Google Apps Script**, the bot ensu
 
 ## 🏗️ System Architecture
 
+┌───────────────┐
+│ User │
+└───────┬───────┘
+▼
+┌────────────────────┐
+│ Zoho SalesIQ Bot │
+└────────┬───────────┘
+▼
+┌────────────────────┐
+│ Google Apps Script │
+└────────┬───────────┘
+▼
+┌────────────────────┐
+│ Google Calendar │
+└────────────────────┘
+
+
+---
+
+## 📂 Project Structure
+
+
+
+BLACK-MAN-S-APPOINTMENT-SCHEDULER-BOT/
+│
+├── backend/
+│ ├── Code.gs
+│ ├── Config.gs
+│ ├── Utilities.gs
+│ └── Calendar.gs
+│
+├── salesiq-handlers/
+│ ├── context_handler.deluge
+│ ├── trigger_handler.deluge
+│ ├── message_handler.deluge
+│ └── failure_handler.deluge
+│
+├── screenshots/
+│ ├── welcome.png
+│ ├── services.png
+│ └── confirmation.png
+│
+├── docs/
+│ ├── SETUP_GUIDE.md
+│ ├── API_DOCUMENTATION.md
+│ └── TROUBLESHOOTING.md
+│
+├── Images/
+│ └── CLIQTRIX.png ← (Banner Image)
+│
+├── README.md
+├── LICENSE
+└── .gitignore
+
+
+---
+
+## 🚀 Installation & Setup
+
+### ✅ Prerequisites
+
+- Zoho SalesIQ Account  
+- Google Account with Calendar Access  
+
+---
+
+### 🔹 Google Apps Script Setup
+
+1. Open **Google Apps Script console**
+2. Create a new project  
+3. Add these files from `/backend/` folder:
+   - `Code.gs`
+   - `Config.gs`
+   - `Utilities.gs`
+   - `Calendar.gs`
+4. Update your calendar ID inside `Config.gs`:
+
+```javascript
+CALENDAR_ID = "your-calendar-id@gmail.com";
+
+
+Deploy the project as a Web App
+
+Copy the Deployment URL and paste it in your Context Handler:
+
+scriptUrl = "YOUR_APPS_SCRIPT_WEB_APP_URL";
+
+🔹 Zoho SalesIQ Bot Setup
+
+Go to Settings → Bot → Zobot
+
+Click Create Bot
+
+Add handlers from /salesiq-handlers/ folder:
+
+Handler Type	File
+Trigger	trigger_handler.deluge
+Message	message_handler.deluge
+Context	context_handler.deluge
+Failure	failure_handler.deluge
+
+Enable and Publish the bot ✅
+
+🔹 Website Integration
+
+Paste this before your closing </body> tag:
+
+<script>
+  window.$zoho = window.$zoho || {};
+  $zoho.salesiq = $zoho.salesiq || { ready: function() {} };
+</script>
+<script id="zsiqscript" src="YOUR_WIDGET_URL" defer></script>
+
+💬 Usage
+🗓️ Book an Appointment
+
+Open bot → Type menu → Press 1
+
+Choose service → Enter details → Type CONFIRM
+
+Save your Appointment ID ✅
+
+🔁 Reschedule
+
+menu → 2 → Appointment ID → Select new slot/date/time
+
+❌ Cancel
+
+menu → 3 → Appointment ID → Confirm cancellation
+
+📋 View Services
+
+menu → 4 → Browse service catalog
+
+🔮 Future Improvements
+
+ AI-based slot suggestions
+
+ SMS reminders
+
+ Payments integration
+
+ Multi-language support
+
+ Voice-based booking
+
+ CRM synchronization
+
+ Video call scheduling
+
+🤝 Contributing
+
+Fork this repository
+
+Create a feature branch
+
+Commit your changes
+
+Push and open a pull request ✅
+
+📧 Contact
+
+For support or collaboration:
+
+Email: l.churchill427@gmail.com
+
+GitHub: Churchill427
+
+LinkedIn: Your LinkedIn Profile Link Here
+
+⚠️ Disclaimer
+
+This is a competition prototype. For production use ensure:
+
+Security refinement
+
+Scalability testing
+
+Code review
+
+Compliance validation
+
+📄 License
+
+This project is licensed under the MIT License.
