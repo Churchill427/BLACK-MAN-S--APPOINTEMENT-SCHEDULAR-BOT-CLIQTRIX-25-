@@ -6,7 +6,7 @@
 
 ---
 
-## 📌 Project Description
+## Project Description
 
 **BLACK MAN'S Appointment Scheduler Bot** is an intelligent **conversational AI assistant** developed for the **Zoho Cliqtrix 25 Competition**.  
 It automates appointment scheduling workflows including:
@@ -26,22 +26,22 @@ Integrated with **Google Calendar** through **Google Apps Script**, the bot ensu
 
 ---
 
-## ✨ Features
+## Features
 
-- 🤖 **Conversational AI Interface** for smooth user interaction  
-- 📅 **Google Calendar Sync** for real-time availability checks  
-- ⏰ **Automatic Slot Generation** based on business working hours  
-- 🔄 **Appointment Management** (Reschedule & Cancel)  
-- ✉️ **Email Confirmation Support**  
-- 🔐 **User Input Validation** for secure appointment scheduling  
-- 🧾 **Appointment ID Tracking** for quick future reference  
+- **Conversational AI Interface** for smooth user interaction  
+- **Google Calendar Sync** for real-time availability checks  
+- **Automatic Slot Generation** based on business working hours  
+- **Appointment Management** (Reschedule & Cancel)  
+- **Email Confirmation Support**  
+- **User Input Validation** for secure appointment scheduling  
+- **Appointment ID Tracking** for quick future reference  
 
 ---
 
 
-## 🚀 Installation & Setup
+##  Installation & Setup
 
-### ✅ Prerequisites
+### Prerequisites
 
 - Zoho SalesIQ Account  
 - Google Account with Calendar Access  
