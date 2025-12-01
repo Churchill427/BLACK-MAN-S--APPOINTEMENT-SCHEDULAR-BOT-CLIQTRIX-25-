@@ -26,6 +26,19 @@ Integrated with **Google Calendar** through **Google Apps Script**, the bot ensu
 
 ---
 
+---
+
+##  Results & Output Preview
+
+<p align="center">
+  <img src="Images/output1.png" width="800" alt="Result 1"/>
+  <img src="Images/output2.png" width="800" alt="Result 2"/>
+  <img src="Images/output3.png" width="800" alt="Result 3"/>
+</p>
+
+---
+
+
 ## Features
 
 - **Conversational AI Interface** for smooth user interaction  
